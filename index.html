@@ -131,14 +131,15 @@
         const modal = document.getElementById('recipeModal');
         const modalBody = document.getElementById('modal-body');
         
-        let allMeals = []; // Global storage of the downloaded file
+        let allMeals = []; 
+        let popularMix = []; // Holds the randomized homepage selection
 
         function toggleLoading(show) {
             loader.style.display = show ? 'block' : 'none';
             grid.style.opacity = show ? '0.2' : '1';
         }
 
-        // Initialize and pull the entire database directly from your repository
+        // Initialize and pull the database
         async function init() {
             toggleLoading(true);
             try {
@@ -146,8 +147,11 @@
                 const res = await fetch(url);
                 allMeals = await res.json();
                 
-                // Show a default mix of 12 items on start
-                displayMeals(allMeals.slice(0, 12));
+                // Shuffle database array copy to create a randomized home menu
+                const shuffled = [...allMeals].sort(() => 0.5 - Math.random());
+                popularMix = shuffled.slice(0, 12);
+                
+                displayMeals(popularMix);
             } catch (error) {
                 grid.innerHTML = "<p>Error loading the recipe database. Check your file format or repository configuration.</p>";
                 console.error(error);
@@ -167,25 +171,23 @@
                 const subtext = (meal.strArea && meal.strCategory) ? `${meal.strArea} • ${meal.strCategory}` : "Recipe";
                 card.innerHTML = `<img src="${meal.strMealThumb}"><div class="card-info"><span>${subtext}</span><h3>${meal.strMeal}</h3></div>`;
                 
-                // Open modal using local object context directly
                 card.onclick = () => openRecipe(meal);
                 grid.appendChild(card);
             });
         }
 
-        // SUPERCHARGED INTERNAL SEARCH
+        // LOCAL SEARCH LOGIC
         function handleSearch(event) {
             const query = event.target.value.toLowerCase().trim();
             
             if (query.length === 0) {
                 title.innerText = "Popular Recipes";
-                displayMeals(allMeals.slice(0, 12));
+                displayMeals(popularMix); // Returns back to the randomized homepage mix
                 return;
             }
 
             if (query.length < 2) return;
 
-            // Instantly filtering everything locally by Name, Category, or Cuisine
             const filteredResults = allMeals.filter(meal => {
                 const nameMatch = meal.strMeal && meal.strMeal.toLowerCase().includes(query);
                 const catMatch = meal.strCategory && meal.strCategory.toLowerCase().includes(query);
@@ -197,7 +199,7 @@
             displayMeals(filteredResults);
         }
 
-        // Sidebar Filter using local database array
+        // Sidebar Filter
         function filterBySidebar(cat) {
             window.scrollTo({top: 0, behavior: 'smooth'});
             title.innerText = `${cat} Selection`;
@@ -205,7 +207,7 @@
             displayMeals(filtered);
         }
 
-        // Open recipe directly from local memory object
+        // Modal Rendering
         function openRecipe(meal) {
             let ingredientsHTML = '';
             for (let i = 1; i <= 20; i++) {
@@ -233,7 +235,6 @@
 
         function closeModal() { modal.style.display = 'none'; }
         
-        // Pick a completely random index out of your full repository array
         function fetchRandom() {
             if (allMeals.length === 0) return;
             const randomIndex = Math.floor(Math.random() * allMeals.length);
