@@ -1,248 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<title>Munchy | What's for dinner?</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		:root {
-			--primary: #FFB370;
-			--secondary: #FFD49B;
-			--accent: #E67E22;
-			--accent-dark: #D35400;
-			--bg: #FFF9F3;
-			--text: #333;
-			--text-light: #5D4037;
-			--nav-height: 70px;
-		}
+    <meta charset="utf-8" />
+    <title>Munchy | What's for dinner?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #FFB370;
+            --secondary: #FFD49B;
+            --accent: #E67E22;
+            --accent-dark: #D35400;
+            --bg: #FFF9F3;
+            --text: #333;
+            --text-light: #5D4037;
+            --nav-height: 70px;
+        }
 
-		body { 
-			margin: 0; font-family: 'Segoe UI', sans-serif; 
-			display: flex; flex-direction: column; min-height: 100vh; 
-			background-color: var(--bg); color: var(--text);
-		}
+        body { 
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; min-height: 100vh; 
+            background-color: var(--bg); color: var(--text);
+        }
 
-		/* --- NAVBAR --- */
-		.navbar { 
-			background-color: var(--primary); 
-			height: var(--nav-height);
-			padding: 0 30px; 
-			display: flex; align-items: center; justify-content: space-between; 
-			box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-			z-index: 1000; position: sticky; top: 0;
-			box-sizing: border-box;
-		}
-		.nav-left { display: flex; align-items: center; gap: 25px; }
-		.navbar b a { text-decoration: none; color: var(--text); font-size: 28px; letter-spacing: -1px; }
-		.navbar input { 
-			background-color: #FFF; padding: 10px 20px; border: 1px solid #E6A060; 
-			border-radius: 25px; width: 320px; outline: none; transition: 0.3s;
-		}
-		.navbar input:focus { box-shadow: 0 0 10px rgba(230, 126, 34, 0.3); }
+        /* --- NAVBAR --- */
+        .navbar { 
+            background-color: var(--primary); 
+            height: var(--nav-height);
+            padding: 0 30px; 
+            display: flex; align-items: center; justify-content: space-between; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            z-index: 1000; position: sticky; top: 0;
+            box-sizing: border-box;
+        }
+        .nav-left { display: flex; align-items: center; gap: 25px; }
+        .navbar b a { text-decoration: none; color: var(--text); font-size: 28px; letter-spacing: -1px; }
+        .navbar input { 
+            background-color: #FFF; padding: 10px 20px; border: 1px solid #E6A060; 
+            border-radius: 25px; width: 320px; outline: none; transition: 0.3s;
+        }
+        .navbar input:focus { box-shadow: 0 0 10px rgba(230, 126, 34, 0.3); }
 
-		.susbutton { 
-			background-color: var(--accent); color: white; font-weight: bold; 
-			cursor: pointer; border: none; padding: 10px 25px; border-radius: 25px; transition: 0.3s; 
-		}
-		.susbutton:hover { background-color: var(--accent-dark); transform: scale(1.05); }
+        .susbutton { 
+            background-color: var(--accent); color: white; font-weight: bold; 
+            cursor: pointer; border: none; padding: 10px 25px; border-radius: 25px; transition: 0.3s; 
+        }
+        .susbutton:hover { background-color: var(--accent-dark); transform: scale(1.05); }
 
-		/* --- LAYOUT --- */
-		.main-container { display: flex; flex: 1; position: relative; }
+        /* --- LAYOUT --- */
+        .main-container { display: flex; flex: 1; position: relative; }
 
-		.sidebar { 
-			width: 220px; background-color: var(--secondary); border-right: 1px solid #F3C184;
-			padding: 30px 0; position: sticky; top: var(--nav-height);
-			height: calc(100vh - var(--nav-height)); align-self: flex-start;
-			box-sizing: border-box; overflow-y: auto;
-		}
-		.sidebar-label { padding: 0 20px; margin-bottom: 15px; font-size: 12px; font-weight: bold; color: var(--accent-dark); text-transform: uppercase; }
-		.sidebar a { 
-			text-decoration: none; color: var(--text-light); display: block; font-weight: 600; cursor: pointer;
-			padding: 12px 20px; border-left: 4px solid transparent; transition: 0.2s;
-		}
-		.sidebar a:hover { color: var(--accent); background-color: rgba(255, 255, 255, 0.4); border-left: 4px solid var(--accent); }
+        .sidebar { 
+            width: 220px; background-color: var(--secondary); border-right: 1px solid #F3C184;
+            padding: 30px 0; position: sticky; top: var(--nav-height);
+            height: calc(100vh - var(--nav-height)); align-self: flex-start;
+            box-sizing: border-box; overflow-y: auto;
+        }
+        .sidebar-label { padding: 0 20px; margin-bottom: 15px; font-size: 12px; font-weight: bold; color: var(--accent-dark); text-transform: uppercase; }
+        .sidebar a { 
+            text-decoration: none; color: var(--text-light); display: block; font-weight: 600; cursor: pointer;
+            padding: 12px 20px; border-left: 4px solid transparent; transition: 0.2s;
+        }
+        .sidebar a:hover { color: var(--accent); background-color: rgba(255, 255, 255, 0.4); border-left: 4px solid var(--accent); }
 
-		/* --- CONTENT --- */
-		.content { flex: 1; padding: 30px; }
-		#loader { display: none; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 50px auto; }
-		@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* --- CONTENT AREA --- */
+        .content { flex: 1; padding: 30px; }
+        #loader { display: none; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 50px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-		.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-		
-		.card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
-		.card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-		.card img { width: 100%; height: 200px; object-fit: cover; }
-		.card-info { padding: 15px; }
-		.card-info span { font-size: 11px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
-		.card-info h3 { margin: 5px 0 0; font-size: 18px; line-height: 1.3; }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        
+        /* --- CARDS --- */
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-info { padding: 15px; }
+        .card-info span { font-size: 11px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
+        .card-info h3 { margin: 5px 0 0; font-size: 18px; line-height: 1.3; }
 
-		/* --- MODAL --- */
-		.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
-		.modal-content { background: white; width: 100%; max-width: 900px; max-height: 85vh; border-radius: 20px; overflow-y: auto; padding: 40px; animation: slideUp 0.4s ease-out; box-sizing: border-box; }
-		@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-		.close-btn { float: right; font-size: 35px; cursor: pointer; color: var(--accent); }
-		.modal-header { display: flex; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
-		.modal-header img { width: 300px; height: 300px; object-fit: cover; border-radius: 15px; }
-		.ingredients-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fff5eb; padding: 20px; border-radius: 10px; list-style: none; }
-		.instructions { line-height: 1.8; white-space: pre-line; color: #444; }
+        /* --- MODAL --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 100%; max-width: 900px; max-height: 85vh; border-radius: 20px; overflow-y: auto; padding: 40px; animation: slideUp 0.4s ease-out; box-sizing: border-box; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-btn { float: right; font-size: 35px; cursor: pointer; color: var(--accent); line-height: 1; }
+        .modal-header { display: flex; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
+        .modal-header img { width: 300px; height: 300px; object-fit: cover; border-radius: 15px; }
+        .ingredients-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fff5eb; padding: 20px; border-radius: 10px; list-style: none; }
+        .instructions { line-height: 1.8; white-space: pre-line; color: #444; }
 
-		@media (max-width: 768px) { .navbar input { width: 150px; } .main-container { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; top: 0; display: flex; flex-wrap: wrap; padding: 10px; } }
-	</style>
+        @media (max-width: 768px) { .navbar input { width: 150px; } .main-container { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; top: 0; display: flex; flex-wrap: wrap; padding: 10px; } }
+    </style>
 </head>
 <body>
 
-	<div class="navbar">
-		<div class="nav-left">
-			<b><a href="#" onclick="location.reload()">Munchy</a></b>
-			<input id="searchbar" type="text" placeholder="Search German, Italian, Chicken..." onkeyup="handleSearch(event)">
-		</div>
-		<button class="susbutton" type="button" onclick="fetchRandom()">🎲 Surprise Me!</button>
-	</div>
+    <div class="navbar">
+        <div class="nav-left">
+            <b><a href="#" onclick="location.reload()">Munchy</a></b>
+            <input id="searchbar" type="text" placeholder="Search German, chicken, dessert..." onkeyup="handleSearch(event)">
+        </div>
+        <button class="susbutton" type="button" onclick="fetchRandom()">🎲 Surprise Me!</button>
+    </div>
 
-	<div class="main-container">
-		<div class="sidebar">
-			<div class="sidebar-label">Categories</div>
-			<a onclick="filterBySidebar('Chicken')">🍗 Chicken</a>
-			<a onclick="filterBySidebar('Pasta')">🍝 Pasta</a>
-			<a onclick="filterBySidebar('Seafood')">🐟 Seafood</a>
-			<a onclick="filterBySidebar('Vegetarian')">🌱 Vegetarian</a>
-			<a onclick="filterBySidebar('Dessert')">🍰 Desserts</a>
-		</div>
-		
-		<div class="content">
-			<h2 id="result-title">Popular Recipes</h2>
-			<div id="loader"></div>
-			<div class="recipe-grid" id="recipe-grid"></div>
-		</div>
-	</div>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-label">Categories</div>
+            <a onclick="filterBySidebar('Chicken')">🍗 Chicken</a>
+            <a onclick="filterBySidebar('Pasta')">🍝 Pasta</a>
+            <a onclick="filterBySidebar('Seafood')">🐟 Seafood</a>
+            <a onclick="filterBySidebar('Vegetarian')">🌱 Vegetarian</a>
+            <a onclick="filterBySidebar('Dessert')">🍰 Desserts</a>
+        </div>
+        
+        <div class="content">
+            <h2 id="result-title">Popular Recipes</h2>
+            <div id="loader"></div>
+            <div class="recipe-grid" id="recipe-grid"></div>
+        </div>
+    </div>
 
-	<div id="recipeModal" class="modal-overlay" onclick="closeModal()">
-		<div class="modal-content" onclick="event.stopPropagation()">
-			<span class="close-btn" onclick="closeModal()">&times;</span>
-			<div id="modal-body"></div>
-		</div>
-	</div>
+    <div id="recipeModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 
-	<script>
-		const grid = document.getElementById('recipe-grid');
-		const loader = document.getElementById('loader');
-		const title = document.getElementById('result-title');
-		const modal = document.getElementById('recipeModal');
-		const modalBody = document.getElementById('modal-body');
-		let initialMeals = [];
+    <script>
+        const grid = document.getElementById('recipe-grid');
+        const loader = document.getElementById('loader');
+        const title = document.getElementById('result-title');
+        const modal = document.getElementById('recipeModal');
+        const modalBody = document.getElementById('modal-body');
+        
+        let allMeals = []; // Global storage of the downloaded file
 
-		function toggleLoading(show) {
-			loader.style.display = show ? 'block' : 'none';
-			grid.style.opacity = show ? '0.2' : '1';
-		}
+        function toggleLoading(show) {
+            loader.style.display = show ? 'block' : 'none';
+            grid.style.opacity = show ? '0.2' : '1';
+        }
 
-		async function init() {
-			toggleLoading(true);
-			const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=`);
-			const data = await res.json();
-			initialMeals = data.meals || [];
-			displayMeals(initialMeals);
-			toggleLoading(false);
-		}
+        // Initialize and pull the entire database directly from your repository
+        async function init() {
+            toggleLoading(true);
+            try {
+                const url = `https://raw.githubusercontent.com/Gabyface910/munchy-api/main/meals.json?t=${Date.now()}`;
+                const res = await fetch(url);
+                allMeals = await res.json();
+                
+                // Show a default mix of 12 items on start
+                displayMeals(allMeals.slice(0, 12));
+            } catch (error) {
+                grid.innerHTML = "<p>Error loading the recipe database. Check your file format or repository configuration.</p>";
+                console.error(error);
+            }
+            toggleLoading(false);
+        }
 
-		function displayMeals(meals) {
-			grid.innerHTML = "";
-			if (!meals || meals.length === 0) {
-				grid.innerHTML = "<p>No recipes found. Try searching for a Cuisine (German, Japanese) or Ingredient (Chicken).</p>";
-				return;
-			}
-			meals.forEach(meal => {
-				const card = document.createElement('div');
-				card.className = 'card';
-				const subtext = (meal.strArea && meal.strCategory) ? `${meal.strArea} • ${meal.strCategory}` : "Recipe";
-				card.innerHTML = `<img src="${meal.strMealThumb}"><div class="card-info"><span>${subtext}</span><h3>${meal.strMeal}</h3></div>`;
-				card.onclick = () => openRecipe(meal.idMeal);
-				grid.appendChild(card);
-			});
-		}
+        function displayMeals(meals) {
+            grid.innerHTML = "";
+            if (!meals || meals.length === 0) {
+                grid.innerHTML = "<p>No recipes found. Try another keyword!</p>";
+                return;
+            }
+            meals.forEach(meal => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const subtext = (meal.strArea && meal.strCategory) ? `${meal.strArea} • ${meal.strCategory}` : "Recipe";
+                card.innerHTML = `<img src="${meal.strMealThumb}"><div class="card-info"><span>${subtext}</span><h3>${meal.strMeal}</h3></div>`;
+                
+                // Open modal using local object context directly
+                card.onclick = () => openRecipe(meal);
+                grid.appendChild(card);
+            });
+        }
 
-		// DEEP SEARCH LOGIC
-		let searchTimeout;
-		async function handleSearch(event) {
-			const query = event.target.value.toLowerCase().trim();
-			clearTimeout(searchTimeout);
-			
-			searchTimeout = setTimeout(async () => {
-				if (query.length === 0) { displayMeals(initialMeals); title.innerText = "Popular Recipes"; return; }
-				if (query.length < 3) return;
+        // SUPERCHARGED INTERNAL SEARCH
+        function handleSearch(event) {
+            const query = event.target.value.toLowerCase().trim();
+            
+            if (query.length === 0) {
+                title.innerText = "Popular Recipes";
+                displayMeals(allMeals.slice(0, 12));
+                return;
+            }
 
-				toggleLoading(true);
-				
-				// 1. Check for Cuisine (Area) first
-				const areaRes = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${query}`);
-				const areaData = await areaRes.json();
+            if (query.length < 2) return;
 
-				if (areaData.meals) {
-					title.innerText = `${query.charAt(0).toUpperCase() + query.slice(1)} Cuisine`;
-					displayMeals(areaData.meals);
-				} else {
-					// 2. Fallback to Name Search
-					const nameRes = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
-					const nameData = await nameRes.json();
+            // Instantly filtering everything locally by Name, Category, or Cuisine
+            const filteredResults = allMeals.filter(meal => {
+                const nameMatch = meal.strMeal && meal.strMeal.toLowerCase().includes(query);
+                const catMatch = meal.strCategory && meal.strCategory.toLowerCase().includes(query);
+                const areaMatch = meal.strArea && meal.strArea.toLowerCase().includes(query);
+                return nameMatch || catMatch || areaMatch;
+            });
 
-					if (nameData.meals) {
-						title.innerText = `Results for "${query}"`;
-						displayMeals(nameData.meals);
-					} else {
-						// 3. Fallback to Category Search
-						const catRes = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${query}`);
-						const catData = await catRes.json();
-						if (catData.meals) {
-							title.innerText = `${query} Category`;
-							displayMeals(catData.meals);
-						} else {
-							displayMeals(null);
-						}
-					}
-				}
-				toggleLoading(false);
-			}, 600);
-		}
+            title.innerText = `Results for "${event.target.value}"`;
+            displayMeals(filteredResults);
+        }
 
-		async function filterBySidebar(cat) {
-			toggleLoading(true);
-			title.innerText = `${cat} Selection`;
-			const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${cat}`);
-			const data = await res.json();
-			displayMeals(data.meals);
-			toggleLoading(false);
-		}
+        // Sidebar Filter using local database array
+        function filterBySidebar(cat) {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            title.innerText = `${cat} Selection`;
+            const filtered = allMeals.filter(meal => meal.strCategory && meal.strCategory.toLowerCase() === cat.toLowerCase());
+            displayMeals(filtered);
+        }
 
-		async function openRecipe(id) {
-			const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-			const data = await res.json();
-			const meal = data.meals[0];
-			let ingredientsHTML = '';
-			for (let i = 1; i <= 20; i++) {
-				if (meal[`strIngredient${i}`]) {
-					ingredientsHTML += `<li><strong>${meal[`strMeasure${i}`]}</strong> ${meal[`strIngredient${i}`]}</li>`;
-				}
-			}
-			modalBody.innerHTML = `
-				<div class="modal-header">
-					<img src="${meal.strMealThumb}">
-					<div>
-						<h1>${meal.strMeal}</h1>
-						<p>${meal.strArea} | ${meal.strCategory}</p>
-					</div>
-				</div>
-				<h3>Ingredients</h3><ul class="ingredients-list">${ingredientsHTML}</ul>
-				<h3>Preparation</h3><p class="instructions">${meal.strInstructions}</p>`;
-			modal.style.display = 'flex';
-		}
+        // Open recipe directly from local memory object
+        function openRecipe(meal) {
+            let ingredientsHTML = '';
+            for (let i = 1; i <= 20; i++) {
+                const ing = meal[`strIngredient${i}`];
+                const measure = meal[`strMeasure${i}`];
+                if (ing && ing.trim() !== "") {
+                    ingredientsHTML += `<li><strong>${measure || ''}</strong> ${ing}</li>`;
+                }
+            }
+            
+            modalBody.innerHTML = `
+                <div class="modal-header">
+                    <img src="${meal.strMealThumb}">
+                    <div>
+                        <h1>${meal.strMeal}</h1>
+                        <p><strong>Cuisine:</strong> ${meal.strArea || 'N/A'} | <strong>Category:</strong> ${meal.strCategory || 'N/A'}</p>
+                        ${meal.strYoutube ? `<a href="${meal.strYoutube}" target="_blank" style="color:red; font-weight:bold; text-decoration:none; border:2px solid red; padding:5px 10px; border-radius:5px; display:inline-block; margin-top:10px;">▶ Watch Video</a>` : ''}
+                    </div>
+                </div>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <h3>Ingredients</h3><ul class="ingredients-list">${ingredientsHTML}</ul>
+                <h3>Preparation</h3><p class="instructions">${meal.strInstructions}</p>`;
+            modal.style.display = 'flex';
+        }
 
-		function closeModal() { modal.style.display = 'none'; }
-		async function fetchRandom() {
-			const res = await fetch(`https://www.themealdb.com/api/json/v1/1/random.php`);
-			const data = await res.json();
-			openRecipe(data.meals[0].idMeal);
-		}
-		init();
-	</script>
+        function closeModal() { modal.style.display = 'none'; }
+        
+        // Pick a completely random index out of your full repository array
+        function fetchRandom() {
+            if (allMeals.length === 0) return;
+            const randomIndex = Math.floor(Math.random() * allMeals.length);
+            openRecipe(allMeals[randomIndex]);
+        }
+
+        init();
+    </script>
 </body>
 </html>
