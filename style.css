@@ -1,8 +1,0 @@
-body { font-family: sans-serif; background: #fffcf9; color: #333; padding: 20px; }
-h1 { color: #ff6b35; } /* Tasty Orange */
-.recipe-grid { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; }
-button { 
-    background: #ff6b35; color: white; border: none; 
-    padding: 15px; border-radius: 50px; font-weight: bold;
-    position: fixed; bottom: 20px; right: 20px;
-}
