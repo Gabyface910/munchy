@@ -144,6 +144,7 @@
         const modal = document.getElementById('recipeModal');
         const modalBody = document.getElementById('modal-body');
         
+        const DEFAULT_TITLE = "Munchy | What's for dinner?";
         let allMeals = []; 
         let popularMix = [];
 
@@ -182,6 +183,7 @@
                 }
             } else if (!hash) {
                 modal.style.display = 'none';
+                document.title = DEFAULT_TITLE; // Restore title if modal is closed via navigation
             }
         }
 
@@ -231,6 +233,9 @@
                 window.location.hash = `recipe:${meal.idMeal}`;
             }
 
+            // Update browser document tab title dynamically
+            document.title = `${meal.strMeal} on Munchy`;
+
             let ingredientsHTML = '';
             for (let i = 1; i <= 20; i++) {
                 const ing = meal[`strIngredient${i}`];
@@ -257,17 +262,15 @@
             modal.style.display = 'flex';
         }
 
-        // SMART SHARE FUNCTION
         async function shareRecipe(mealName) {
             const shareData = {
                 title: `${mealName} on Munchy`,
-                text: `Look! I found ${mealName} on Munchy!`,
-                url: window.location.href // Captures the exact URL with the hash link included
+                text: `Check out this recipe for ${mealName} on Munchy!`,
+                url: window.location.href
             };
 
             const btn = document.getElementById('shareBtn');
 
-            // If the browser supports native mobile sharing (iOS / Android)
             if (navigator.share) {
                 try {
                     await navigator.share(shareData);
@@ -275,14 +278,12 @@
                     console.log('Share canceled or failed', err);
                 }
             } else {
-                // Desktop fallback: Copy link to clipboard
                 try {
                     await navigator.clipboard.writeText(window.location.href);
                     btn.innerText = "✅ Link Copied!";
                     btn.style.backgroundColor = "#27AE60";
                     btn.style.color = "white";
                     
-                    // Reset back to original style after 2 seconds
                     setTimeout(() => {
                         btn.innerText = "🔗 Share Recipe";
                         btn.style.backgroundColor = "transparent";
@@ -296,6 +297,8 @@
 
         function closeModal() { 
             modal.style.display = 'none';
+            // Restore default main window document tab title
+            document.title = DEFAULT_TITLE;
             history.pushState("", document.title, window.location.pathname + window.location.search);
         }
         
