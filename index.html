@@ -124,7 +124,7 @@
         </div>
         
         <div class="content">
-            <h2 id="result-title">Popular Recipes</h2>
+            <h2 id="result-title">Featured Recipes</h2>
             <div id="loader"></div>
             <div class="recipe-grid" id="recipe-grid"></div>
         </div>
@@ -206,7 +206,7 @@
 
         function handleSearch(event) {
             const query = event.target.value.toLowerCase().trim();
-            if (query.length === 0) { title.innerText = "Popular Recipes"; displayMeals(popularMix); return; }
+            if (query.length === 0) { title.innerText = "Featured Recipes"; displayMeals(popularMix); return; }
             if (query.length < 2) return;
 
             const filteredResults = allMeals.filter(meal => {
