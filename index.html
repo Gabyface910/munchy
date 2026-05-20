@@ -5,6 +5,7 @@
     <title>Munchy | What's for dinner?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* --- LIGHT THEME COLORS --- */
         :root {
             --primary: #FFB370;
             --secondary: #FFD49B;
@@ -13,13 +14,31 @@
             --bg: #FFF9F3;
             --text: #333;
             --text-light: #5D4037;
+            --card-bg: white;
+            --modal-bg: white;
+            --list-bg: #fff5eb;
             --nav-height: 70px;
+        }
+
+        /* --- DARK THEME COLORS --- */
+        [data-theme="dark"] {
+            --primary: #2C1A10;
+            --secondary: #3D281C;
+            --accent: #E67E22;
+            --accent-dark: #FF9F43;
+            --bg: #1E120C;
+            --text: #F5E6DF;
+            --text-light: #D2B4A4;
+            --card-bg: #2D1D15;
+            --modal-bg: #251811;
+            --list-bg: #362319;
         }
 
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             display: flex; flex-direction: column; min-height: 100vh; 
             background-color: var(--bg); color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* --- NAVBAR --- */
@@ -31,12 +50,16 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
             z-index: 1000; position: sticky; top: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s;
         }
         .nav-left { display: flex; align-items: center; gap: 25px; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
         .navbar b a { text-decoration: none; color: var(--text); font-size: 28px; letter-spacing: -1px; }
+        
         .navbar input { 
-            background-color: #FFF; padding: 10px 20px; border: 1px solid #E6A060; 
-            border-radius: 25px; width: 320px; outline: none; transition: 0.3s;
+            background-color: var(--card-bg); color: var(--text); padding: 10px 20px; 
+            border: 1px solid #E6A060; border-radius: 25px; width: 320px; 
+            outline: none; transition: 0.3s;
         }
         .navbar input:focus { box-shadow: 0 0 10px rgba(230, 126, 34, 0.3); }
 
@@ -46,21 +69,29 @@
         }
         .susbutton:hover { background-color: var(--accent-dark); transform: scale(1.05); }
 
+        /* --- DARK MODE TOGGLE --- */
+        .theme-toggle {
+            background: none; border: none; font-size: 22px; cursor: pointer;
+            padding: 8px; border-radius: 50%; transition: 0.2s;
+        }
+        .theme-toggle:hover { background-color: rgba(255,255,255,0.2); }
+
         /* --- LAYOUT --- */
         .main-container { display: flex; flex: 1; position: relative; }
 
         .sidebar { 
-            width: 220px; background-color: var(--secondary); border-right: 1px solid #F3C184;
+            width: 220px; background-color: var(--secondary); border-right: 1px solid rgba(243, 193, 132, 0.3);
             padding: 30px 0; position: sticky; top: var(--nav-height);
             height: calc(100vh - var(--nav-height)); align-self: flex-start;
             box-sizing: border-box; overflow-y: auto;
+            transition: background-color 0.3s;
         }
         .sidebar-label { padding: 0 20px; margin-bottom: 15px; font-size: 12px; font-weight: bold; color: var(--accent-dark); text-transform: uppercase; }
         .sidebar a { 
             text-decoration: none; color: var(--text-light); display: block; font-weight: 600; cursor: pointer;
             padding: 12px 20px; border-left: 4px solid transparent; transition: 0.2s;
         }
-        .sidebar a:hover { color: var(--accent); background-color: rgba(255, 255, 255, 0.4); border-left: 4px solid var(--accent); }
+        .sidebar a:hover { color: var(--accent); background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid var(--accent); }
 
         /* --- CONTENT AREA --- */
         .content { flex: 1; padding: 30px; }
@@ -70,8 +101,8 @@
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
         
         /* --- CARDS --- */
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
         .card-info { padding: 15px; }
         .card-info span { font-size: 11px; color: var(--accent); font-weight: bold; text-transform: uppercase; }
@@ -79,7 +110,7 @@
 
         /* --- MODAL --- */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-content { background: white; width: 100%; max-width: 900px; max-height: 85vh; border-radius: 20px; overflow-y: auto; padding: 40px; animation: slideUp 0.4s ease-out; box-sizing: border-box; }
+        .modal-content { background: var(--modal-bg); color: var(--text); width: 100%; max-width: 900px; max-height: 85vh; border-radius: 20px; overflow-y: auto; padding: 40px; animation: slideUp 0.4s ease-out; box-sizing: border-box; transition: background-color 0.3s; }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .close-btn { float: right; font-size: 35px; cursor: pointer; color: var(--accent); line-height: 1; }
         .modal-header { display: flex; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
@@ -92,13 +123,11 @@
             font-weight: bold; text-decoration: none; padding: 8px 16px; 
             border-radius: 20px; font-size: 14px; cursor: pointer; border: none; transition: 0.2s;
         }
-        .yt-btn { color: #FF0000; border: 2px solid #FF0000; background: transparent; }
-        .yt-btn:hover { background: #FF0000; color: white; }
         .share-btn { color: #27AE60; border: 2px solid #27AE60; background: transparent; }
         .share-btn:hover { background: #27AE60; color: white; }
 
-        .ingredients-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #fff5eb; padding: 20px; border-radius: 10px; list-style: none; }
-        .instructions { line-height: 1.8; white-space: pre-line; color: #444; }
+        .ingredients-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: var(--list-bg); padding: 20px; border-radius: 10px; list-style: none; }
+        .instructions { line-height: 1.8; white-space: pre-line; color: var(--text); opacity: 0.9; }
 
         @media (max-width: 768px) { .navbar input { width: 150px; } .main-container { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; top: 0; display: flex; flex-wrap: wrap; padding: 10px; } .modal-header img { width: 100%; height: auto; } }
     </style>
@@ -110,7 +139,10 @@
             <b><a href="#" onclick="clearHashAndReload()">Munchy</a></b>
             <input id="searchbar" type="text" placeholder="Search German, chicken, dessert..." onkeyup="handleSearch(event)">
         </div>
-        <button class="susbutton" type="button" onclick="fetchRandom()">🎲 Surprise Me!</button>
+        <div class="nav-right">
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <button class="susbutton" type="button" onclick="fetchRandom()">🎲 Surprise Me!</button>
+        </div>
     </div>
 
     <div class="main-container">
@@ -153,7 +185,24 @@
             grid.style.opacity = show ? '0.2' : '1';
         }
 
+        // --- DARK MODE LOGIC ---
+        function initTheme() {
+            const savedTheme = localStorage.getItem('munchy-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('munchy-theme', newTheme);
+            document.getElementById('themeBtn').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
         async function init() {
+            initTheme(); // Set theme colors right away
             toggleLoading(true);
             try {
                 const url = `https://raw.githubusercontent.com/Gabyface910/munchy-api/main/meals.json?t=${Date.now()}`;
@@ -183,7 +232,7 @@
                 }
             } else if (!hash) {
                 modal.style.display = 'none';
-                document.title = DEFAULT_TITLE; // Restore title if modal is closed via navigation
+                document.title = DEFAULT_TITLE;
             }
         }
 
@@ -233,7 +282,6 @@
                 window.location.hash = `recipe:${meal.idMeal}`;
             }
 
-            // Update browser document tab title dynamically
             document.title = `${meal.strMeal} on Munchy`;
 
             let ingredientsHTML = '';
@@ -256,7 +304,7 @@
                         </div>
                     </div>
                 </div>
-                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin:20px 0;">
                 <h3>Ingredients</h3><ul class="ingredients-list">${ingredientsHTML}</ul>
                 <h3>Preparation</h3><p class="instructions">${meal.strInstructions}</p>`;
             modal.style.display = 'flex';
@@ -264,7 +312,7 @@
 
         async function shareRecipe(mealName) {
             const shareData = {
-                title: `${mealName} on Munchy`,
+                title: `Munchy | ${mealName}`,
                 text: `Check out this recipe for ${mealName} on Munchy!`,
                 url: window.location.href
             };
@@ -297,7 +345,6 @@
 
         function closeModal() { 
             modal.style.display = 'none';
-            // Restore default main window document tab title
             document.title = DEFAULT_TITLE;
             history.pushState("", document.title, window.location.pathname + window.location.search);
         }
