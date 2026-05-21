@@ -1,6 +1,6 @@
 <div align=center>
   
-  [![badge](https://github.com/Gabyface910/munchy/blob/main/logo.png?raw=true)](#)
+  [![badge](https://github.com/Gabyface910/munchy/blob/main/munchylogo.png?raw=true)](#)
   # Munchy
 
   The open-source recipe app
