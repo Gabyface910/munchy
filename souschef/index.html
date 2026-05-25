@@ -4,8 +4,6 @@
     <meta charset="utf-8" />
     <title>Munchy Sous Chef | AI Kitchen Assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An AI recipe maker for Munchy. Cooks up delicious recipes.">
-    <link rel="icon" type="image/png" href="https://github.com/Gabyface910/munchy/blob/main/munchylogo.png?raw=true">
     <style>
         /* --- UNIFIED THEME PALETTE --- */
         :root {
@@ -83,7 +81,7 @@
         textarea { height: 120px; resize: vertical; }
 
         /* --- BUTTONS & FLEX --- */
-        .row { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+        .row { display: flex; gap: 10px; margin-top: 15px; align-items: center; flex-wrap: wrap; }
         
         .btn {
             background-color: var(--accent); color: white; font-weight: bold; 
@@ -93,6 +91,15 @@
         .btn:hover { background-color: var(--accent-dark); transform: scale(1.02); }
         .btn-sec { background-color: transparent; color: var(--text); border: 2px solid var(--primary); }
         .btn-sec:hover { background-color: var(--secondary); color: var(--text-light); }
+
+        /* --- EXPORT ACTION ROW --- */
+        .export-actions {
+            display: flex; gap: 10px; margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px dashed var(--primary); flex-wrap: wrap;
+        }
+        .btn-sm {
+            padding: 8px 16px; font-size: 13px; border-radius: 15px;
+        }
 
         .context-badge {
             margin-left: auto; font-size: 13px; font-weight: bold;
@@ -124,6 +131,21 @@
         footer { margin-top: auto; padding: 20px; text-align: center; font-size: 14px; }
         footer a { color: var(--accent); font-weight: bold; text-decoration: none; }
         footer a:hover { text-underline-position: under; text-decoration: underline; }
+
+        /* --- 🖨️ SMART SMART PRINT ARCHITECTURE --- */
+        @media print {
+            body { background: white !important; color: black !important; font-size: 14pt; }
+            .container { max-width: 100% !important; padding: 0 !important; }
+            header, .panel:not(#output), .export-actions, footer, .modal-overlay {
+                display: none !important; /* Hide UI navigation completely */
+            }
+            #output {
+                display: block !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important;
+            }
+            #output h1, #output h2 { color: black !important; border-bottom: 1px solid #333 !important; }
+            #output h3 { color: #222 !important; }
+            #output ul, #output ol { background: transparent !important; padding-left: 25px !important; margin: 10px 0 !important; }
+        }
     </style>
 </head>
 <body>
@@ -175,16 +197,17 @@
     </div>
 
     <footer>
-        Always check Sous Chef's recipes before you make them. Gabyface910 is not responsible for something bad caused by Sous Chef.
-        <br>
-        It is AI, and it can make mistakes. Don't just spam toxic ingredients.
-        <br>
+        Check Sous Chef's recipes before making them. As it is AI, it can make mistakes.
+        In the event of something bad ocurring because of Sous Chef, Gabyface910 is not responsible.
         Need a key? Generate one at the <a href="https://console.groq.com" target="_blank">console.groq.com</a> panel dashboard.
     </footer>
 
     <script>
         let promptHistoryCount = 0;
         const MAX_CONTEXT = 5;
+        
+        let lastRawMarkdown = ""; 
+        let lastRecipeTitle = "sous-chef-recipe";
 
         // --- VISUAL MODE MANAGER ---
         function initTheme() {
@@ -225,43 +248,72 @@
             document.getElementById('instructionModal').style.display = show ? 'flex' : 'none';
         }
 
+        // --- UTILITY EXPORT FUNCTIONS ---
+        async function copyToClipboard() {
+            const copyBtn = document.getElementById('copyBtn');
+            try {
+                await navigator.clipboard.writeText(lastRawMarkdown);
+                copyBtn.innerText = "✅ Copied!";
+                setTimeout(() => { copyBtn.innerText = "📋 Copy Recipe"; }, 2000);
+            } catch (err) {
+                alert("Failed to copy text automatically.");
+            }
+        }
+
+        function downloadFile(extension) {
+            let content = lastRawMarkdown;
+            let mimeType = "text/plain";
+
+            if (extension === 'txt') {
+                content = lastRawMarkdown.replace(/[#\*]/g, '');
+            } else if (extension === 'md') {
+                mimeType = "text/markdown";
+            }
+
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            const safeName = lastRecipeTitle.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+            a.href = url;
+            a.download = `${safeName}.${extension}`;
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function printRecipe() {
+            window.print();
+        }
+
         // --- FULL MARKDOWN INTERCEPTION PARSER ---
         function parseMarkdown(md) {
             let html = md.trim();
 
-            // 1. Triple Asterisks (***bold italics***)
             html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
-
-            // 2. Double Asterisks (**bold**)
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
 
-            // 3. Single Asterisk (*italics*) - Uses negative assertions to avoid breaking bolds
-            html = html.replace(/(?<!\_)\*(?!\_)(.*?)(?<!\_)\*(?!\_)/g, '<em>$1</em>');
-
-            // 4. Headers (# H1, ## H2, ### H3)
             html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
             html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
             html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
 
-            // 5. Unordered Lists (Handles both '-' and '*' tokens explicitly)
             html = html.replace(/^\s*[\*\-]\s+(.*)$/gim, '<li>$1</li>');
             html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
             html = html.replace(/<\/ul>\s*<ul>/gim, '');
 
-            // 6. Ordered Sequence Lists (1. Step item)
             html = html.replace(/^\s*\d+\.\s+(.*)$/gim, '<li>$1</li>');
             html = html.replace(/(<li>.*<\/li>)/gim, function(match) {
                 return match.includes('<ul>') ? match : '<ol>' + match + '</ol>';
             });
             html = html.replace(/<\/ol>\s*<ol>/gim, '');
             
-            // 7. Structural Paragraph Block Generation
             html = html.split(/\n\n+/).map(p => {
                 const trimmed = p.trim();
-                if (!trimmed.startsWith('<h') && 
-                    !trimmed.startsWith('<u') && 
-                    !trimmed.startsWith('<o') && 
-                    !trimmed.startsWith('<l')) {
+                if (!trimmed.startsWith('<h') && !trimmed.startsWith('<u') && !trimmed.startsWith('<o') && !trimmed.startsWith('<l')) {
                     return `<p>${trimmed}</p>`;
                 }
                 return trimmed;
@@ -288,7 +340,7 @@
             if (promptHistoryCount >= MAX_CONTEXT) {
                 alert("Session context limit of 5 prompts reached! Refreshing your kitchen workspace memory sheet.");
                 promptHistoryCount = 0;
-                document.getElementById('contextCounter').innerText = `Chat History: ${promptHistoryCount} / ${MAX_CONTEXT} turns`;
+                document.getElementById('contextCounter').innerText = `Context Used: ${promptHistoryCount} / ${MAX_CONTEXT}`;
             }
 
             outputBox.style.display = "block";
@@ -306,7 +358,7 @@
                         messages: [
                             {
                                 role: "system",
-                                content: "You are Munchy Sous Chef, an expert kitchen assistant. Invent a creative recipe based on the user's list. You must structure your output cleanly using markdown headers: Use '# [Recipe Title]' at the top, followed by '## Category & Cuisine', '### Ingredients', and '### Preparation'. Use simple dashes '-' or asterisks '*' for ingredient points, and numbers '1.' for steps. Bold key elements and emphasize special notes using italics where helpful. Do not include any chat conversational filler text at the beginning or end."
+                                content: "You are Munchy Sous Chef, an expert kitchen assistant. Invent a creative recipe based on the user's list. You must structure your output cleanly using markdown headers: Use '# [Recipe Title]' at the top, followed by '## Category & Cuisine', '### Ingredients', and '### Preparation'. Use simple dashes '-' or asterisks '*' for ingredient points, and numbers '1.' for steps. Bold key elements and emphasize special notes using italics (like *text*) where helpful. Do not include any chat conversational filler text at the beginning or end."
                             },
                             {
                                 role: "user",
@@ -324,10 +376,23 @@
                 }
 
                 promptHistoryCount++;
-                document.getElementById('contextCounter').innerText = `Chat History: ${promptHistoryCount} / ${MAX_CONTEXT} turns`;
+                document.getElementById('contextCounter').innerText = `Context Used: ${promptHistoryCount} / ${MAX_CONTEXT}`;
 
-                const rawMarkdown = data.choices[0].message.content;
-                outputBox.innerHTML = parseMarkdown(rawMarkdown);
+                lastRawMarkdown = data.choices[0].message.content;
+                
+                const titleMatch = lastRawMarkdown.match(/^#\s+(.*)$/m);
+                lastRecipeTitle = titleMatch ? titleMatch[1] : "sous-chef-recipe";
+
+                const actionRowHTML = `
+                    <div class="export-actions">
+                        <button class="btn btn-sec btn-sm" id="copyBtn" onclick="copyToClipboard()">📋 Copy Recipe</button>
+                        <button class="btn btn-sec btn-sm" onclick="downloadFile('txt')">📄 Download .txt</button>
+                        <button class="btn btn-sec btn-sm" onclick="downloadFile('md')">📝 Download .md</button>
+                        <button class="btn btn-sec btn-sm" onclick="printRecipe()">🖨️ Print Recipe</button>
+                    </div>
+                `;
+
+                outputBox.innerHTML = actionRowHTML + parseMarkdown(lastRawMarkdown);
 
             } catch (error) {
                 outputBox.innerHTML = `
