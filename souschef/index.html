@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <title>Munchy Sous Chef | AI Kitchen Assistant</title>
+    <link rel="icon" type="image/png" href="https://github.com/Gabyface910/munchy/blob/main/munchylogo.png?raw=true">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A Munchy app to generate recipes with AI and some ingredients. Employs the Groq API.">
     <style>
         /* --- UNIFIED THEME PALETTE --- */
         :root {
@@ -333,14 +335,14 @@
                 return;
             }
             if (!ingredients) {
-                alert("Tell the Sous Chef what ingredients you have!");
+                alert("Tell Sous Chef what ingredients you have!");
                 return;
             }
 
             if (promptHistoryCount >= MAX_CONTEXT) {
                 alert("Session context limit of 5 prompts reached! Refreshing your kitchen workspace memory sheet.");
                 promptHistoryCount = 0;
-                document.getElementById('contextCounter').innerText = `Context Used: ${promptHistoryCount} / ${MAX_CONTEXT}`;
+                document.getElementById('contextCounter').innerText = `Chat History: ${promptHistoryCount} / ${MAX_CONTEXT} turns`;
             }
 
             outputBox.style.display = "block";
@@ -358,7 +360,7 @@
                         messages: [
                             {
                                 role: "system",
-                                content: "You are Munchy Sous Chef, an expert kitchen assistant. Invent a creative recipe based on the user's list. You must structure your output cleanly using markdown headers: Use '# [Recipe Title]' at the top, followed by '## Category & Cuisine', '### Ingredients', and '### Preparation'. Use simple dashes '-' or asterisks '*' for ingredient points, and numbers '1.' for steps. Bold key elements and emphasize special notes using italics (like *text*) where helpful. Do not include any chat conversational filler text at the beginning or end."
+                                content: "You are Munchy Sous Chef, an expert kitchen assistant. Invent a creative recipe based on the user's list. You don't have to use all the provided ingredients, just think of what tastes good together and is palatable. You must structure your output cleanly using markdown headers: Use '# [Recipe Title]' at the top, followed by '## Category & Cuisine', '### Ingredients', and '### Preparation'. Use simple dashes '-' or asterisks '*' for ingredient points, and numbers '1.' for steps. Bold key elements and emphasize special notes using italics (like *text*) where helpful. Do not include any chat conversational filler text at the beginning or end."
                             },
                             {
                                 role: "user",
