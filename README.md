@@ -1,7 +1,10 @@
 <div align=center>
   
-  [![badge](https://github.com/Gabyface910/munchy/blob/main/munchylogo.png?raw=true)](#)
+  <img style="height: 100px; width: auto;" src="https://github.com/Gabyface910/munchy/blob/main/munchylogo.png?raw=true"> 
+  
   # Munchy
+  
+  
 
   The open-source recipe app
 
@@ -46,7 +49,7 @@ How to use Munchy:
 > 
 > [**Passion Fruit Mousse**](https://gabyface910.github.io/munchy/#recipe:53333)
 ---
-## Munchy Sous Chef
+## 🧑‍🍳 Munchy Sous Chef
 Sous Chef is the latest extension for Munchy. Simply input a Groq API key (get one for FREE [here](https://console.groq.com)) and some ingredients you have, and Sous Chef will generate a recipe to meet your needs.
 > [!WARNING]
 > As Sous Chef is AI, it can make mistakes. Double-check recipes before making them.
