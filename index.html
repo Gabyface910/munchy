@@ -126,11 +126,62 @@
         }
         .share-btn { color: #27AE60; border: 2px solid #27AE60; background: transparent; }
         .share-btn:hover { background: #27AE60; color: white; }
+        
+        .print-btn { color: #2980b9; border: 2px solid #2980b9; background: transparent; }
+        .print-btn:hover { background: #2980b9; color: white; }
 
         .ingredients-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: var(--list-bg); padding: 20px; border-radius: 10px; list-style: none; }
         .instructions { line-height: 1.8; white-space: pre-line; color: var(--text); opacity: 0.9; }
 
         @media (max-width: 768px) { .navbar input { width: 150px; } .main-container { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; top: 0; display: flex; flex-wrap: wrap; padding: 10px; } .modal-header img { width: 100%; height: auto; } }
+
+        /* --- COMPACT PRINT ENGINE --- */
+        @media print {
+            /* 1. Completely remove everything else from the DOM paint calculation */
+            .navbar, .main-container, .close-btn, .action-buttons, #loader { 
+                display: none !important; 
+            }
+            
+            /* 2. Strip background styling completely for standard paper */
+            body { 
+                background: white !important; 
+                color: black !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+            }
+            
+            /* 3. Force the modal layout to take over flat layout flow */
+            .modal-overlay { 
+                position: relative !important; 
+                display: block !important; 
+                background: transparent !important; 
+                backdrop-filter: none !important; 
+                padding: 0 !important; 
+                z-index: auto !important;
+                overflow: visible !important;
+            }
+            
+            .modal-content { 
+                max-height: none !important; 
+                overflow-y: visible !important; 
+                padding: 0 !important; 
+                border-radius: 0 !important; 
+                box-shadow: none !important; 
+                animation: none !important; 
+                width: 100% !important; 
+            }
+            
+            .ingredients-list { 
+                background: #f9f9f9 !important; 
+                border: 1px solid #ddd !important; 
+                color: black !important; 
+            }
+            
+            .instructions { 
+                color: black !important; 
+                opacity: 1 !important; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -154,9 +205,8 @@
             <a onclick="filterBySidebar('Seafood')">🐟 Seafood</a>
             <a onclick="filterBySidebar('Vegetarian')">🌱 Vegetarian</a>
             <a onclick="filterBySidebar('Dessert')">🍰 Desserts</a>
-            <a onclick="filterBySidebar('Drink')">🍸 Drinks</a>
             <br>
-            <a href="https://gabyface910.github.io/munchy/souschef/">‍👨‍🍳 Munchy Sous Chef</a>
+            <a href="https://gabyface910.github.io/munchy/souschef/">👨‍🍳 Munchy Sous Chef</a>
         </div>
         
         <div class="content">
@@ -206,7 +256,7 @@
         }
 
         async function init() {
-            initTheme(); // Set theme colors right away
+            initTheme(); 
             toggleLoading(true);
             try {
                 const url = `https://raw.githubusercontent.com/Gabyface910/munchy-api/main/meals.json?t=${Date.now()}`;
@@ -304,7 +354,8 @@
                         <h1>${meal.strMeal}</h1>
                         <p><strong>Cuisine:</strong> ${meal.strArea || 'N/A'} | <strong>Category:</strong> ${meal.strCategory || 'N/A'}</p>
                         <div class="action-buttons">
-                            <button onclick="shareRecipe('${meal.strMeal}')" id="shareBtn" class="action-btn share-btn">🔗 Share Recipe</button>
+                            <button onclick="shareRecipe('${meal.strMeal.replace(/'/g, "\\'")}')" id="shareBtn" class="action-btn share-btn">🔗 Share Recipe</button>
+                            <button onclick="window.print()" class="action-btn print-btn">🖨️ Print Recipe</button>
                         </div>
                     </div>
                 </div>
