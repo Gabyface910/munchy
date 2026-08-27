@@ -6,7 +6,7 @@
   
   
 
-  The open-source recipe app
+  The open-source recipe web app
 
 </div>
 
